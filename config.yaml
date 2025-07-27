@@ -1,0 +1,11 @@
+log:
+  level: "info"
+  format: "json"
+
+queue:
+  kafka:
+    brokers:
+      - "kafka1:9092"
+      - "kafka2:9092"
+  redis:
+    address: "localhost:6379"
