@@ -10,7 +10,8 @@ import (
 )
 
 // New initializes the logger.
-func New(cfg config.LogConfig) {
+// It configures the logger based on the provided configuration.
+func New(cfg config.LogConfig, verbose bool) {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
 	level, err := zerolog.ParseLevel(strings.ToLower(cfg.Level))
@@ -18,11 +19,15 @@ func New(cfg config.LogConfig) {
 		log.Warn().Msgf("unknown log level: %s. defaulting to 'info'", cfg.Level)
 		level = zerolog.InfoLevel
 	}
+
+	if verbose {
+		level = zerolog.DebugLevel
+	}
 	zerolog.SetGlobalLevel(level)
 
 	if cfg.Format == "json" {
 		log.Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 	} else {
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, NoColor: false})
 	}
 }

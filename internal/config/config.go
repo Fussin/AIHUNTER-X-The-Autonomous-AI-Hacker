@@ -1,48 +1,61 @@
 package config
 
 import (
-	"os"
+	"strings"
 
-	"gopkg.in/yaml.v3"
+	"github.com/spf13/viper"
 )
 
 // Config holds the application's configuration.
 type Config struct {
-	Log   LogConfig `yaml:"log"`
-	Queue Queue     `yaml:"queue"`
+	// Log is the logging configuration.
+	Log LogConfig `mapstructure:"log"`
+	// Queue is the queue configuration.
+	Queue Queue `mapstructure:"queue"`
 }
 
 // LogConfig holds the logging configuration.
 type LogConfig struct {
-	Level  string `yaml:"level"`
-	Format string `yaml:"format"`
+	// Level is the logging level.
+	Level string `mapstructure:"level"`
+	// Format is the logging format.
+	Format string `mapstructure:"format"`
 }
 
+// Queue holds the queue configuration.
 type Queue struct {
-	Kafka KafkaConfig `yaml:"kafka"`
-	Redis RedisConfig `yaml:"redis"`
+	// Kafka is the Kafka configuration.
+	Kafka KafkaConfig `mapstructure:"kafka"`
+	// Redis is the Redis configuration.
+	Redis RedisConfig `mapstructure:"redis"`
 }
 
+// KafkaConfig holds the Kafka configuration.
 type KafkaConfig struct {
-	Brokers []string `yaml:"brokers"`
+	// Brokers is a list of Kafka brokers.
+	Brokers []string `mapstructure:"brokers"`
 }
 
+// RedisConfig holds the Redis configuration.
 type RedisConfig struct {
-	Address string `yaml:"address"`
+	// Address is the Redis address.
+	Address string `mapstructure:"address"`
 }
 
 // Load loads the configuration from the given path.
+// It uses viper to load the configuration from a file, environment variables, and command-line flags.
 func Load(path string) (*Config, error) {
-	f, err := os.Open(path)
-	if err != nil {
+	viper.SetConfigFile(path)
+	viper.SetConfigType("yaml") // or json, toml, etc.
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
 	}
-	defer f.Close()
 
 	var cfg Config
-	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(&cfg)
-	if err != nil {
+	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err
 	}
 

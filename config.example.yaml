@@ -1,0 +1,23 @@
+# AIHUNTER-X Configuration File
+#
+# This file contains the configuration for the AIHUNTER-X application.
+# You can override these settings using environment variables or command-line flags.
+
+# Logging configuration
+log:
+  # Log level (debug, info, warn, error, fatal, panic)
+  level: "info"
+  # Log format (console, json)
+  format: "console"
+
+# Queue configuration
+queue:
+  # Kafka configuration
+  kafka:
+    # List of Kafka brokers
+    brokers:
+      - "localhost:9092"
+  # Redis configuration
+  redis:
+    # Redis address
+    address: "localhost:6379"
