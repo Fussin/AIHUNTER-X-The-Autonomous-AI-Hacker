@@ -6,7 +6,8 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
-	"github.com/user/aihunter-x/internal/config"
+	"github.com/user/aihunter-x/aihunter-core-cli/configs/loader"
+	"github.com/user/aihunter-x/aihunter-core-cli/logger/logger"
 )
 
 func TestNew(t *testing.T) {
@@ -17,7 +18,7 @@ func TestNew(t *testing.T) {
 		Level:  "debug",
 		Format: "console",
 	}
-	New(cfg, true)
+	logger.New(cfg, true)
 
 	testLogger.Debug().Msg("test message")
 

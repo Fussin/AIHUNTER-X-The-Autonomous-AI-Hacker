@@ -7,20 +7,16 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+	"github.com/user/aihunter-x/aihunter-core-cli/cmd/aihunter-x/scan"
 )
 
 func TestNewScanCmd(t *testing.T) {
-	var outBuf, errBuf bytes.Buffer
-	cmd := NewScanCmd()
-	cmd.SetOut(&outBuf)
-	cmd.SetErr(&errBuf)
-	cmd.Flags().BoolP("verbose", "v", false, "verbose output")
-	cmd.SetArgs([]string{"-v"})
-
 	var logBuf bytes.Buffer
 	log.Logger = zerolog.New(&logBuf)
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 
+	cmd := scan.NewScanCmd()
+	cmd.SetArgs([]string{"test"})
 	cmd.Execute()
-	assert.Contains(t, logBuf.String(), "scan called")
+	assert.Contains(t, logBuf.String(), "scan called for target: test")
 }

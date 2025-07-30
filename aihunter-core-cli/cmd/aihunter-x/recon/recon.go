@@ -5,8 +5,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewReconCmd creates a new recon command
-func NewReconCmd() *cobra.Command {
+// Plugin is the recon plugin.
+type Plugin struct{}
+
+// Commands returns the commands for the recon plugin.
+func (p *Plugin) Commands() []*cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "recon [target]",
 		Short: "Perform reconnaissance on a target.",
@@ -17,5 +20,5 @@ func NewReconCmd() *cobra.Command {
 		},
 	}
 	// Add flags here
-	return cmd
+	return []*cobra.Command{cmd}
 }

@@ -5,8 +5,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewValidateCmd creates a new validate command
-func NewValidateCmd() *cobra.Command {
+// Plugin is the validate plugin.
+type Plugin struct{}
+
+// Commands returns the commands for the validate plugin.
+func (p *Plugin) Commands() []*cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "validate [finding]",
 		Short: "Validate a vulnerability finding.",
@@ -17,5 +20,5 @@ func NewValidateCmd() *cobra.Command {
 		},
 	}
 	// Add flags here
-	return cmd
+	return []*cobra.Command{cmd}
 }

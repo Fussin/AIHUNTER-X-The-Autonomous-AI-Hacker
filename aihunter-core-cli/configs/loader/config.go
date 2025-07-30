@@ -9,37 +9,37 @@ import (
 // Config holds the application's configuration.
 type Config struct {
 	// Log is the logging configuration.
-	Log LogConfig `mapstructure:"log"`
+	Log LogConfig `mapstructure:"log" validate:"required"`
 	// Queue is the queue configuration.
-	Queue Queue `mapstructure:"queue"`
+	Queue Queue `mapstructure:"queue" validate:"required"`
 }
 
 // LogConfig holds the logging configuration.
 type LogConfig struct {
 	// Level is the logging level.
-	Level string `mapstructure:"level"`
+	Level string `mapstructure:"level" validate:"required,oneof=debug info warn error fatal panic"`
 	// Format is the logging format.
-	Format string `mapstructure:"format"`
+	Format string `mapstructure:"format" validate:"required,oneof=console json"`
 }
 
 // Queue holds the queue configuration.
 type Queue struct {
 	// Kafka is the Kafka configuration.
-	Kafka KafkaConfig `mapstructure:"kafka"`
+	Kafka KafkaConfig `mapstructure:"kafka" validate:"required"`
 	// Redis is the Redis configuration.
-	Redis RedisConfig `mapstructure:"redis"`
+	Redis RedisConfig `mapstructure:"redis" validate:"required"`
 }
 
 // KafkaConfig holds the Kafka configuration.
 type KafkaConfig struct {
 	// Brokers is a list of Kafka brokers.
-	Brokers []string `mapstructure:"brokers"`
+	Brokers []string `mapstructure:"brokers" validate:"required"`
 }
 
 // RedisConfig holds the Redis configuration.
 type RedisConfig struct {
 	// Address is the Redis address.
-	Address string `mapstructure:"address"`
+	Address string `mapstructure:"address" validate:"required,hostname_port"`
 }
 
 // Load loads the configuration from the given path.

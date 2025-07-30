@@ -6,7 +6,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/user/aihunter-x/internal/config"
+	"github.com/user/aihunter-x/aihunter-core-cli/configs/loader"
 )
 
 // New initializes the logger.

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/user/aihunter-x/aihunter-core-cli/configs/loader"
 )
 
 func TestLoad(t *testing.T) {
@@ -24,7 +25,7 @@ log:
 	assert.NoError(t, err)
 
 	// Test loading the config file
-	cfg, err := Load(tmpfile.Name())
+	cfg, err := config.Load(tmpfile.Name())
 	assert.NoError(t, err)
 	assert.Equal(t, "debug", cfg.Log.Level)
 	assert.Equal(t, "json", cfg.Log.Format)
