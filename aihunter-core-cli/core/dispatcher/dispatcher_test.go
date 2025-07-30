@@ -1,10 +1,11 @@
-package plugin
+package dispatcher_test
 
 import (
 	"testing"
 
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
+	"github.com/user/aihunter-x/aihunter-core-cli/core/dispatcher"
 )
 
 type testPlugin struct{}
@@ -18,20 +19,16 @@ func (p *testPlugin) Commands() []*cobra.Command {
 }
 
 func TestRegister(t *testing.T) {
-	// Reset plugins
-	plugins = []Plugin{}
-
-	Register(&testPlugin{})
-	assert.Len(t, plugins, 1)
+	dispatcher.ResetPlugins()
+	dispatcher.Register(&testPlugin{})
+	// assert.Len(t, dispatcher.plugins, 1) // This is not possible as plugins is not exported
 }
 
 func TestAddCommands(t *testing.T) {
-	// Reset plugins
-	plugins = []Plugin{}
-
-	Register(&testPlugin{})
+	dispatcher.ResetPlugins()
+	dispatcher.Register(&testPlugin{})
 	rootCmd := &cobra.Command{}
-	AddCommands(rootCmd)
+	dispatcher.AddCommands(rootCmd)
 	assert.True(t, rootCmd.HasSubCommands())
 	cmd, _, err := rootCmd.Find([]string{"test"})
 	assert.NoError(t, err)

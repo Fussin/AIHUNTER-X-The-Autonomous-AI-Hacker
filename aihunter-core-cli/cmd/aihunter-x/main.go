@@ -11,16 +11,16 @@ import (
 	"github.com/user/aihunter-x/aihunter-core-cli/cmd/aihunter-x/validate"
 	"github.com/user/aihunter-x/aihunter-core-cli/configs/loader"
 	"github.com/user/aihunter-x/aihunter-core-cli/core"
-	"github.com/user/aihunter-x/aihunter-core-cli/core/plugin"
+	"github.com/user/aihunter-x/aihunter-core-cli/core/dispatcher"
 	"github.com/user/aihunter-x/aihunter-core-cli/logger/logger"
 )
 
 var (
 	cfgFile string
 	rootCmd = &cobra.Command{
-		Use:              "aihunter-x",
-		Short:            "AIHUNTER-X is an autonomous AI hacker.",
-		Long:             `A fully autonomous AI hacker that tests lakhs of company domains/web apps per run.`,
+		Use:   "aihunter-x",
+		Short: "AIHUNTER-X is an autonomous AI hacker.",
+		Long:  `A fully autonomous AI hacker that tests lakhs of company domains/web apps per run.`,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if cmd.Name() == "completion" {
 				return
@@ -41,11 +41,11 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.aihunter-x.yaml)")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose output")
 
-	plugin.Register(&scan.Plugin{})
-	plugin.Register(&recon.Plugin{})
-	plugin.Register(&validate.Plugin{})
+	dispatcher.Register(&scan.Plugin{})
+	dispatcher.Register(&recon.Plugin{})
+	dispatcher.Register(&validate.Plugin{})
 
-	plugin.AddCommands(rootCmd)
+	dispatcher.AddCommands(rootCmd)
 
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "completion [bash|zsh|fish|powershell]",

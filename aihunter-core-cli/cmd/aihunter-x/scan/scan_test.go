@@ -1,22 +1,20 @@
-package scan
+package scan_test
 
 import (
 	"bytes"
 	"testing"
 
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/user/aihunter-x/aihunter-core-cli/cmd/aihunter-x/scan"
 )
 
 func TestNewScanCmd(t *testing.T) {
-	var logBuf bytes.Buffer
-	log.Logger = zerolog.New(&logBuf)
-	zerolog.SetGlobalLevel(zerolog.DebugLevel)
-
-	cmd := scan.NewScanCmd()
+	var outBuf bytes.Buffer
+	p := &scan.Plugin{}
+	cmd := p.Commands()[0]
+	cmd.SetOut(&outBuf)
 	cmd.SetArgs([]string{"test"})
-	cmd.Execute()
-	assert.Contains(t, logBuf.String(), "scan called for target: test")
+	err := cmd.Execute()
+	assert.NoError(t, err)
+	assert.Contains(t, outBuf.String(), "map[target:test vulnerability:xss]")
 }

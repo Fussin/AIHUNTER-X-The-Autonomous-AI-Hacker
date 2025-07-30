@@ -1,11 +1,10 @@
 package scan
 
 import (
-	"fmt"
-
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	"github.com/user/aihunter-x/aihunter-core-cli/logger"
+	"github.com/spf13/viper"
+	"github.com/user/aihunter-x/aihunter-core-cli/configs/loader"
+	"github.com/user/aihunter-x/aihunter-core-cli/core"
 )
 
 // Plugin is the scan plugin.
@@ -21,20 +20,18 @@ func (p *Plugin) Commands() []*cobra.Command {
 		Example: `  aihunter-x scan example.com
   aihunter-x scan example.com -o result.json`,
 		Args: cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
-			output, _ := cmd.Flags().GetString("output")
-			formatter, err := logger.NewFormatter(output)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cfg, err := config.Load(viper.ConfigFileUsed())
 			if err != nil {
-				log.Fatal().Err(err).Msg("failed to create formatter")
+				return err
 			}
 
-			// Dummy data for now
-			data := map[string]string{"target": args[0], "vulnerability": "xss"}
-			formattedData, err := formatter.Format(data)
+			engine, err := core.Bootstrap(cmd.Name(), cfg)
 			if err != nil {
-				log.Fatal().Err(err).Msg("failed to format data")
+				return err
 			}
-			fmt.Println(string(formattedData))
+
+			return engine.Run(cfg)
 		},
 	}
 	cmd.Flags().StringP("output", "o", "console", "output format (console, json)")

@@ -1,4 +1,4 @@
-package validate
+package validate_test
 
 import (
 	"bytes"
@@ -15,7 +15,8 @@ func TestNewValidateCmd(t *testing.T) {
 	log.Logger = zerolog.New(&logBuf)
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-	cmd := validate.NewValidateCmd()
+	p := &validate.Plugin{}
+	cmd := p.Commands()[0]
 	cmd.SetArgs([]string{"test"})
 	cmd.Execute()
 	assert.Contains(t, logBuf.String(), "validate called for finding: test")

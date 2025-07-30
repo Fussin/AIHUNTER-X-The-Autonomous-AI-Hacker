@@ -1,8 +1,10 @@
 package validate
 
 import (
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/user/aihunter-x/aihunter-core-cli/configs/loader"
+	"github.com/user/aihunter-x/aihunter-core-cli/core"
 )
 
 // Plugin is the validate plugin.
@@ -17,8 +19,18 @@ func (p *Plugin) Commands() []*cobra.Command {
 		Long:    `Validate a vulnerability finding. Provide the finding as an argument.`,
 		Example: `  aihunter-x validate "xss in example.com"`,
 		Args:    cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
-			log.Info().Msgf("validate called for finding: %s", args[0])
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cfg, err := config.Load(viper.ConfigFileUsed())
+			if err != nil {
+				return err
+			}
+
+			engine, err := core.Bootstrap(cmd.Name(), cfg)
+			if err != nil {
+				return err
+			}
+
+			return engine.Run(cfg)
 		},
 	}
 	// Add flags here

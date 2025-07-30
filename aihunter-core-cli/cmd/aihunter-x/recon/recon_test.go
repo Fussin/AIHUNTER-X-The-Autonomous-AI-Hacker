@@ -1,4 +1,4 @@
-package recon
+package recon_test
 
 import (
 	"bytes"
@@ -15,7 +15,8 @@ func TestNewReconCmd(t *testing.T) {
 	log.Logger = zerolog.New(&logBuf)
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-	cmd := recon.NewReconCmd()
+	p := &recon.Plugin{}
+	cmd := p.Commands()[0]
 	cmd.SetArgs([]string{"test"})
 	cmd.Execute()
 	assert.Contains(t, logBuf.String(), "recon called for target: test")
