@@ -14,10 +14,13 @@ type Plugin struct{}
 // Commands returns the commands for the scan plugin.
 func (p *Plugin) Commands() []*cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "scan [target]",
-		Short: "Scan a target for vulnerabilities.",
-		Long:  `Scan a target for vulnerabilities. Provide the target as an argument.`,
-		Args:  cobra.ExactArgs(1),
+		Use:     "scan [target]",
+		Aliases: []string{"s"},
+		Short:   "Scan a target for vulnerabilities.",
+		Long:    `Scan a target for vulnerabilities. Provide the target as an argument.`,
+		Example: `  aihunter-x scan example.com
+  aihunter-x scan example.com -o result.json`,
+		Args: cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			output, _ := cmd.Flags().GetString("output")
 			formatter, err := logger.NewFormatter(output)

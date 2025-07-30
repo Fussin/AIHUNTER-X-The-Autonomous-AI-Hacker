@@ -1,0 +1,9 @@
+log:
+  level: "info"
+  format: "console"
+queue:
+  kafka:
+    brokers:
+      - "localhost:9092"
+  redis:
+    address: "localhost:6379"
