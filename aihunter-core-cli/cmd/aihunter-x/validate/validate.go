@@ -18,7 +18,8 @@ func (p *Plugin) Commands() []*cobra.Command {
 		Short:   "Validate a vulnerability finding.",
 		Long:    `Validate a vulnerability finding. Provide the finding as an argument.`,
 		Example: `  aihunter-x validate "xss in example.com"`,
-		Args:    cobra.ExactArgs(1),
+		Args:             cobra.ExactArgs(1),
+		PersistentPreRunE: core.InitConfig,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(viper.ConfigFileUsed())
 			if err != nil {

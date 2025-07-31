@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/user/aihunter-x/aihunter-core-cli/configs/loader"
 )
@@ -29,4 +30,14 @@ log:
 	assert.NoError(t, err)
 	assert.Equal(t, "debug", cfg.Log.Level)
 	assert.Equal(t, "json", cfg.Log.Format)
+}
+
+func TestLoad_Defaults(t *testing.T) {
+	viper.Reset()
+	// Test loading with no config file
+	cfg, err := config.Load("")
+	assert.NoError(t, err)
+	assert.NotNil(t, cfg)
+	assert.Equal(t, "info", cfg.Log.Level)
+	assert.Equal(t, "console", cfg.Log.Format)
 }

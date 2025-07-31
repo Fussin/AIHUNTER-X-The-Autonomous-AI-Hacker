@@ -19,7 +19,8 @@ func (p *Plugin) Commands() []*cobra.Command {
 		Long:    `Scan a target for vulnerabilities. Provide the target as an argument.`,
 		Example: `  aihunter-x scan example.com
   aihunter-x scan example.com -o result.json`,
-		Args: cobra.ExactArgs(1),
+		Args:             cobra.ExactArgs(1),
+		PersistentPreRunE: core.InitConfig,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(viper.ConfigFileUsed())
 			if err != nil {

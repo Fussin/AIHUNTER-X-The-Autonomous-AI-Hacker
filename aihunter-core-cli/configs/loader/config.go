@@ -17,9 +17,9 @@ type Config struct {
 // LogConfig holds the logging configuration.
 type LogConfig struct {
 	// Level is the logging level.
-	Level string `mapstructure:"level" validate:"required,oneof=debug info warn error fatal panic"`
+	Level string `mapstructure:"level" validate:"required,oneof=debug info warn error fatal panic" default:"info"`
 	// Format is the logging format.
-	Format string `mapstructure:"format" validate:"required,oneof=console json"`
+	Format string `mapstructure:"format" validate:"required,oneof=console json" default:"console"`
 }
 
 // Queue holds the queue configuration.
@@ -45,13 +45,18 @@ type RedisConfig struct {
 // Load loads the configuration from the given path.
 // It uses viper to load the configuration from a file, environment variables, and command-line flags.
 func Load(path string) (*Config, error) {
+	viper.SetDefault("log.level", "info")
+	viper.SetDefault("log.format", "console")
+
 	viper.SetConfigFile(path)
 	viper.SetConfigType("yaml") // or json, toml, etc.
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, err
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			return nil, err
+		}
 	}
 
 	var cfg Config

@@ -18,7 +18,8 @@ func (p *Plugin) Commands() []*cobra.Command {
 		Short:   "Perform reconnaissance on a target.",
 		Long:    `Perform reconnaissance on a target. Provide the target as an argument.`,
 		Example: `  aihunter-x recon example.com`,
-		Args:    cobra.ExactArgs(1),
+		Args:             cobra.ExactArgs(1),
+		PersistentPreRunE: core.InitConfig,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(viper.ConfigFileUsed())
 			if err != nil {
