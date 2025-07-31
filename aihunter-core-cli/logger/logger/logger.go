@@ -1,12 +1,17 @@
 package logger
 
 import (
+	"fmt"
+	"io"
 	"os"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 	"github.com/user/aihunter-x/aihunter-core-cli/configs/loader"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // New initializes the logger.
@@ -25,9 +30,39 @@ func New(cfg config.LogConfig, verbose bool) {
 	}
 	zerolog.SetGlobalLevel(level)
 
-	if cfg.Format == "json" {
-		log.Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
-	} else {
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, NoColor: false})
+	var writers []io.Writer
+	if cfg.File != "" {
+		r := &lumberjack.Logger{
+			Filename:   cfg.File,
+			MaxSize:    cfg.Rotate.MaxSize,
+			MaxBackups: cfg.Rotate.MaxBackups,
+			MaxAge:     cfg.Rotate.MaxAge,
+			Compress:   cfg.Rotate.Compress,
+		}
+		writers = append(writers, r)
 	}
+
+	if cfg.SessionID == "" {
+		cfg.SessionID = uuid.New().String()
+	}
+
+	if cfg.Format == "json" {
+		writers = append(writers, os.Stdout)
+		log.Logger = zerolog.New(io.MultiWriter(writers...)).With().Timestamp().Str("session_id", cfg.SessionID).Logger()
+	} else {
+		consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, NoColor: false}
+		consoleWriter.FormatErrFieldName = func(i interface{}) string {
+			return fmt.Sprintf("\x1b[31m%s:\x1b[0m", i)
+		}
+		consoleWriter.FormatErrFieldValue = func(i interface{}) string {
+			return fmt.Sprintf("\x1b[31m%s\x1b[0m", i)
+		}
+		writers = append(writers, consoleWriter)
+		log.Logger = log.Output(io.MultiWriter(writers...)).With().Str("session_id", cfg.SessionID).Logger()
+	}
+
+	log.Info().
+		Str("version", "0.0.1").
+		Interface("config", viper.AllSettings()).
+		Msg("Starting AIHUNTER-X")
 }
