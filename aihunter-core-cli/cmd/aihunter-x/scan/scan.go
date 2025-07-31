@@ -38,3 +38,13 @@ func (p *Plugin) Commands() []*cobra.Command {
 	cmd.Flags().StringP("output", "o", "console", "output format (console, json)")
 	return []*cobra.Command{cmd}
 }
+
+// PreInit is called before the command is executed.
+func (p *Plugin) PreInit() error {
+	return nil
+}
+
+// OnExit is called when the application is about to exit.
+func (p *Plugin) OnExit() error {
+	return nil
+}
