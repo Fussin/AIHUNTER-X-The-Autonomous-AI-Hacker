@@ -10,7 +10,7 @@ import (
 )
 
 func InitConfig(cmd *cobra.Command, args []string) error {
-	if cmd.Name() == "completion" {
+	if cmd.Name() == "completion" || cmd.Name() == "__complete" {
 		return nil
 	}
 	cfgFile, _ := cmd.Flags().GetString("config")
